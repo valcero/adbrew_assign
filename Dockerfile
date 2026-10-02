@@ -1,5 +1,9 @@
 # set base image (host OS)
-FROM python:3.8
+FROM python:3.8-buster
+
+RUN echo "deb http://archive.debian.org/debian buster main" > /etc/apt/sources.list \
+    && echo "deb http://archive.debian.org/debian-security buster/updates main" >> /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99no-check-valid-until
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
@@ -20,8 +24,8 @@ RUN apt-get install -y mongodb-org
 # Install Yarn
 RUN apt-get install -y yarn
 
-# Install PIP
-RUN easy_install pip
+# Upgrade PIP instead of easy_install
+RUN pip install "pip<24.1" setuptools
 
 
 ENV ENV_TYPE staging
